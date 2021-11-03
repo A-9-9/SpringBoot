@@ -5,12 +5,12 @@ public class ProductParameter {
     private String keyWord;
     private String orderBy;
     private String sortRule;
-    private int priceFrom;
-    private int priceTo;
+    private Integer priceFrom;
+    private Integer priceTo;
 
     public String getKeyWord() {
 
-        return keyWord == null ? "" : keyWord;
+        return this.keyWord;
     }
 
     public void setKeyWord(String keyWord) {
@@ -33,19 +33,19 @@ public class ProductParameter {
         this.sortRule = sortRule;
     }
 
-    public int getPriceFrom() {
+    public Integer getPriceFrom() {
         return priceFrom;
     }
 
-    public void setPriceFrom(int priceFrom) {
+    public void setPriceFrom(Integer priceFrom) {
         this.priceFrom = priceFrom;
     }
 
-    public int getPriceTo() {
+    public Integer getPriceTo() {
         return priceTo;
     }
 
-    public void setPriceTo(int priceTo) {
+    public void setPriceTo(Integer priceTo) {
         this.priceTo = priceTo;
     }
 }
