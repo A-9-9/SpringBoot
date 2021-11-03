@@ -205,5 +205,33 @@ public class ProductTest {
         Assert.assertEquals(response.getStatus(), HttpStatus.OK.value());
     }
 
+    @Test
+    public void get400WhenCreateProductWithEmptyName() throws Exception {
+        JSONObject request = new JSONObject()
+                .put("name", "")
+                .put("price", 90);
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/products")
+                .headers(httpHeaders)
+                .content(request.toString()))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
 
+    @Test
+    public void get400WhenReplaceProductWithEmptyPrice() throws Exception {
+        Product product = createProduct("Apple pie", 50);
+        productRepository.insert(product);
+
+        JSONObject requestBody = new JSONObject()
+                .put("name", "Apple Juice")
+                .put("price", -1);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .put("/products/" + product.getId())
+                .headers(httpHeaders)
+                .content(requestBody.toString()))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
 }
