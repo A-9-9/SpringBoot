@@ -234,4 +234,16 @@ public class ProductTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    public void get400WhenCreateProductWithEmptyPrice() throws Exception {
+        JSONObject request = new JSONObject()
+                .put("name", "apple pie")
+                .put("price", null);
+        mockMvc.perform(MockMvcRequestBuilders.post("/products")
+                .headers(httpHeaders)
+                .content(request.toString()))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
 }

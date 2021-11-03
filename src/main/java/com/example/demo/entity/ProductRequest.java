@@ -2,10 +2,12 @@ package com.example.demo.entity;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 public class ProductRequest {
     @NotEmpty(message = "Product name is undefined.")
     private String name;
+    @NotNull
     @Min(value = 0, message = "Price should be equal or grater to 0.")
     private Integer price;
 
