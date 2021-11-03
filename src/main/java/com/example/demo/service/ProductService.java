@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
+import com.example.demo.converter.ProductConverter;
 import com.example.demo.entity.Product;
+import com.example.demo.entity.ProductRequest;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.parameter.ProductParameter;
 import com.example.demo.repository.ProductRepository;
@@ -17,11 +19,8 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public Product createProduct(Product request) {
-        Product product = new Product();
-        product.setPrice(request.getPrice());
-        product.setName(request.getName());
-
+    public Product createProduct(ProductRequest request) {
+        Product product = ProductConverter.toProduct(request);
         return productRepository.insert(product);
     }
 
@@ -31,13 +30,12 @@ public class ProductService {
                 orElseThrow(() -> new NotFoundException("Can't find product."));
     }
 
-    public Product replaceProduct(String id, Product request) {
+    public Product replaceProduct(String id, ProductRequest request) {
         Product oldProduct = getProduct(id);
 
-        Product product = new Product();
+        Product product = ProductConverter.toProduct(request);
         product.setId(oldProduct.getId());
-        product.setName(request.getName());
-        product.setPrice(request.getPrice());
+        
         return productRepository.save(product);
     }
 
