@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Product;
 import com.example.demo.entity.ProductRequest;
+import com.example.demo.entity.ProductResponse;
 import com.example.demo.parameter.ProductParameter;
 import com.example.demo.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,27 +27,27 @@ public class ProductController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProduct(@PathVariable("id") String id) {
-        Product product = productService.getProduct(id);
-        return ResponseEntity.ok(product);
+    public ResponseEntity<ProductResponse> getProduct(@PathVariable("id") String id) {
+        ProductResponse productResponse = productService.getProductResponse(id);
+        return ResponseEntity.ok(productResponse);
     }
 
     @PostMapping
-    public ResponseEntity<Product> createProduct(@Valid @RequestBody ProductRequest request) {
-        Product product = productService.createProduct(request);
+    public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductRequest request) {
+        ProductResponse productResponse = productService.createProduct(request);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(product.getId())
+                .buildAndExpand(productResponse.getId())
                 .toUri();
-        return ResponseEntity.created(location).body(product);
+        return ResponseEntity.created(location).body(productResponse);
 
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> modifyProduct(@PathVariable("id") String id, @Valid @RequestBody ProductRequest request) {
-        Product product = productService.replaceProduct(id, request);
-        return ResponseEntity.ok(product);
+    public ResponseEntity<ProductResponse> modifyProduct(@PathVariable("id") String id, @Valid @RequestBody ProductRequest request) {
+        ProductResponse productResponse = productService.replaceProduct(id, request);
+        return ResponseEntity.ok(productResponse);
     }
 
     @DeleteMapping("/{id}")
@@ -63,8 +64,8 @@ public class ProductController {
 
 
     @GetMapping
-    public ResponseEntity<List<Product>> getProductsWithMultipleParam(@ModelAttribute ProductParameter request) {
-        List<Product> products = productService.find(request);
-        return ResponseEntity.ok(products);
+    public ResponseEntity<List<ProductResponse>> getProductsWithMultipleParam(@ModelAttribute ProductParameter request) {
+        List<ProductResponse> productResponses = productService.find(request);
+        return ResponseEntity.ok(productResponses);
     }
 }
