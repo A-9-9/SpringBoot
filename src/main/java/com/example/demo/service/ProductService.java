@@ -16,10 +16,14 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Service
+
 public class ProductService {
-    @Autowired
+
     private ProductRepository productRepository;
+
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
     public ProductResponse createProduct(ProductRequest request) {
         Product product = ProductConverter.toProduct(request);

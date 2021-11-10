@@ -14,33 +14,33 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.Properties;
 
-@Service
-public class MailService {
 
-    @Autowired
-    MailConfig mailConfig;
+public class MailService {
 
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     private JavaMailSenderImpl mailSender;
 
-    @PostConstruct
-    private void init() {
-        mailSender = new JavaMailSenderImpl();
-        mailSender.setHost(mailConfig.getHost());
-        mailSender.setPort(mailConfig.getPort());
-        mailSender.setUsername(mailConfig.getUsername());
-        mailSender.setPassword(mailConfig.getPassword());
-
-        Properties props = mailSender.getJavaMailProperties();
-        props.put("mail.smtp.auth", mailConfig.isAuthEnable());
-        props.put("mail.smtp.starttls.enable", mailConfig.isStarttlsEnable());
-        props.put("mail.transport.protocol", mailConfig.getProtocol());
+    public MailService(JavaMailSenderImpl mailSender) {
+        this.mailSender = mailSender;
     }
+//    @PostConstruct
+//    private void init() {
+//        mailSender = new JavaMailSenderImpl();
+//        mailSender.setHost(mailConfig.getHost());
+//        mailSender.setPort(mailConfig.getPort());
+//        mailSender.setUsername(mailConfig.getUsername());
+//        mailSender.setPassword(mailConfig.getPassword());
+//
+//        Properties props = mailSender.getJavaMailProperties();
+//        props.put("mail.smtp.auth", mailConfig.isAuthEnable());
+//        props.put("mail.smtp.starttls.enable", mailConfig.isStarttlsEnable());
+//        props.put("mail.transport.protocol", mailConfig.getProtocol());
+//    }
 
     public void sendMail(SendMailRequest request) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(mailConfig.getUsername());
+        message.setFrom(mailSender.getUsername());
         message.setTo(request.getReceivers());
         message.setSubject(request.getSubject());
         message.setText(request.getContent());
