@@ -20,14 +20,18 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     private ProductRepository productRepository;
+    private MailService mailService;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, MailService mailService) {
         this.productRepository = productRepository;
+        this.mailService = mailService;
     }
 
     public ProductResponse createProduct(ProductRequest request) {
         Product product = ProductConverter.toProduct(request);
-        return ProductConverter.toProductResponse(productRepository.insert(product));
+        product = productRepository.insert(product);
+        mailService.sendNewProductMail(product.getId());
+        return ProductConverter.toProductResponse(product);
     }
 
     public ProductResponse getProductResponse(String id) {
@@ -52,6 +56,7 @@ public class ProductService {
 
     public void deleteProduct(String id) {
         productRepository.deleteById(id);
+        mailService.sendDeleteProductMail(id);
     }
 
     public List<ProductResponse> find(ProductParameter parameter) {
