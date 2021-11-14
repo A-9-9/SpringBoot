@@ -20,20 +20,25 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     private ProductRepository productRepository;
+    private MailService mailService;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, MailService mailService) {
+        this.mailService = mailService;
         this.productRepository = productRepository;
     }
 
     public ProductResponse createProduct(ProductRequest request) {
         Product product = ProductConverter.toProduct(request);
-        return ProductConverter.toProductResponse(productRepository.insert(product));
+        Product response = productRepository.insert(product);
+        mailService.sendCreateProductMail(response.getId());
+        return ProductConverter.toProductResponse(response);
     }
 
     public ProductResponse getProductResponse(String id) {
         Product product = productRepository.
                 findById(id).
                 orElseThrow(() -> new NotFoundException("Can't find product."));
+
         return ProductConverter.toProductResponse(product);
     }
 
@@ -52,6 +57,7 @@ public class ProductService {
 
     public void deleteProduct(String id) {
         productRepository.deleteById(id);
+        mailService.sendDeleteProductMail(id);
     }
 
     public List<ProductResponse> find(ProductParameter parameter) {

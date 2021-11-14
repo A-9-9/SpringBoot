@@ -4,6 +4,7 @@ import com.example.demo.entity.Product;
 import com.example.demo.entity.ProductRequest;
 import com.example.demo.entity.ProductResponse;
 import com.example.demo.parameter.ProductParameter;
+import com.example.demo.service.MailService;
 import com.example.demo.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,8 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private MailService mailService;
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getProduct(@PathVariable("id") String id) {
@@ -35,7 +38,7 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductRequest request) {
         ProductResponse productResponse = productService.createProduct(request);
-
+        mailService.sendCreateProductMail(productResponse.getId());
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(productResponse.getId())
@@ -53,6 +56,7 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteProduct(@PathVariable("id") String id) {
         productService.deleteProduct(id);
+        mailService.sendCreateProductMail(id);
         return ResponseEntity.noContent().build();
 
 //        ResponseEntity.notFound().build();

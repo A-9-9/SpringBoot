@@ -2,10 +2,10 @@ package com.example.demo.config;
 
 import com.example.demo.service.MailService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.*;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Properties;
 
@@ -53,6 +53,7 @@ public class MailConfig {
     private String platform;
 
     @Bean
+    @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
     public MailService mailService() {
         JavaMailSenderImpl mailSender = platform.equalsIgnoreCase("gmail")
                 ? getGmailSender()
@@ -62,6 +63,7 @@ public class MailConfig {
         props.put("mail.smtp.starttls.enable", this.isStarttlsEnable());
         props.put("mail.transport.protocol", this.getProtocol());
 
+        System.out.println("The mail service is created.");
         return new MailService(mailSender);
     }
 
