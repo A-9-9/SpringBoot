@@ -1,23 +1,19 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Product;
-import com.example.demo.entity.ProductRequest;
-import com.example.demo.entity.ProductResponse;
+import com.example.demo.entity.product.ProductRequest;
+import com.example.demo.entity.product.ProductResponse;
 import com.example.demo.parameter.ProductParameter;
 import com.example.demo.service.MailService;
 import com.example.demo.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/products", produces = MediaType.APPLICATION_JSON_VALUE)

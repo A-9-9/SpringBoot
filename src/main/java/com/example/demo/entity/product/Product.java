@@ -1,9 +1,25 @@
-package com.example.demo.entity;
+package com.example.demo.entity.product;
 
-public class ProductResponse {
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+
+@Document(collection = "product")
+public class Product {
+
     private String id;
+
     private String name;
+
     private int price;
+
+    public Product(){};
+    public Product(String id, String name, int price) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+    }
 
     public String getId() {
         return id;

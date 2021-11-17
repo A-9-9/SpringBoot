@@ -1,6 +1,6 @@
 package com.example.demo;
 
-import com.example.demo.entity.Product;
+import com.example.demo.entity.product.Product;
 import com.example.demo.repository.ProductRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;

@@ -1,10 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.config.MailConfig;
-import com.example.demo.entity.SendMailRequest;
+import com.example.demo.entity.mail.SendMailRequest;
 import com.example.demo.service.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

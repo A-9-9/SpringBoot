@@ -1,8 +1,8 @@
 package com.example.demo.converter;
 
-import com.example.demo.entity.Product;
-import com.example.demo.entity.ProductRequest;
-import com.example.demo.entity.ProductResponse;
+import com.example.demo.entity.product.Product;
+import com.example.demo.entity.product.ProductRequest;
+import com.example.demo.entity.product.ProductResponse;
 
 public class ProductConverter {
     ProductConverter(){};

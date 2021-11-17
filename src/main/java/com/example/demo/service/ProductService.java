@@ -1,15 +1,13 @@
 package com.example.demo.service;
 
 import com.example.demo.converter.ProductConverter;
-import com.example.demo.entity.Product;
-import com.example.demo.entity.ProductRequest;
-import com.example.demo.entity.ProductResponse;
+import com.example.demo.entity.product.Product;
+import com.example.demo.entity.product.ProductRequest;
+import com.example.demo.entity.product.ProductResponse;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.parameter.ProductParameter;
 import com.example.demo.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
