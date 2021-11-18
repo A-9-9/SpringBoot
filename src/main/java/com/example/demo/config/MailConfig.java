@@ -1,5 +1,6 @@
 package com.example.demo.config;
 
+import com.example.demo.auth.UserIdentity;
 import com.example.demo.service.MailService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -57,7 +58,7 @@ public class MailConfig {
 
     @Bean
     @RequestScope
-    public MailService mailService() {
+    public MailService mailService(UserIdentity userIdentity) {
         JavaMailSenderImpl mailSender = platform.equalsIgnoreCase("gmail")
                 ? getGmailSender()
                 : getYahooMailSender();
@@ -67,7 +68,7 @@ public class MailConfig {
         props.put("mail.transport.protocol", this.getProtocol());
 
         System.out.println("Mail Service is Created.");
-        return new MailService(mailSender);
+        return new MailService(mailSender, userIdentity);
     }
 
     public JavaMailSenderImpl getGmailSender() {

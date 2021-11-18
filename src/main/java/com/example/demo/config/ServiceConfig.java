@@ -1,5 +1,6 @@
 package com.example.demo.config;
 
+import com.example.demo.auth.UserIdentity;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.service.MailService;
 import com.example.demo.service.ProductService;
@@ -16,9 +17,9 @@ import java.util.Properties;
 public class ServiceConfig {
     @Bean
     @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
-    public ProductService productService(ProductRepository productRepository, MailService mailService) {
+    public ProductService productService(ProductRepository productRepository, MailService mailService, UserIdentity userIdentity) {
         System.out.println("Product Service is Created.");
-        return new ProductService(productRepository, mailService);
+        return new ProductService(productRepository, mailService, userIdentity);
     }
 
 

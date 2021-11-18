@@ -20,7 +20,7 @@ public class ProductConverter {
         response.setId(product.getId());
         response.setPrice(product.getPrice());
         response.setName(product.getName());
-
+        response.setCreator(product.getCreator());
         return response;
     }
 }

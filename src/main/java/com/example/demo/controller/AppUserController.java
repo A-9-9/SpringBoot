@@ -28,7 +28,7 @@ public class AppUserController {
         return ResponseEntity.created(location).body(response);
     }
 
-    @GetMapping("/id")
+    @GetMapping("/{id}")
     public ResponseEntity<AppUserResponse> getUser(@PathVariable("id") String id) {
         AppUserResponse response = appUserService.getUserResponseById(id);
         return ResponseEntity.ok(response);

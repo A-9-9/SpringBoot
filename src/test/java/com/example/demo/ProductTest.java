@@ -1,6 +1,11 @@
 package com.example.demo;
 
+import com.example.demo.auth.AuthRequest;
+import com.example.demo.entity.app_user.AppUser;
+import com.example.demo.entity.app_user.UserAuthority;
 import com.example.demo.entity.product.Product;
+import com.example.demo.entity.product.ProductRequest;
+import com.example.demo.repository.AppUserRepository;
 import com.example.demo.repository.ProductRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -16,6 +21,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -24,6 +30,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
@@ -40,6 +47,9 @@ public class ProductTest {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private AppUserRepository appUserRepository;
+
     private HttpHeaders httpHeaders;
 
     @Before
@@ -47,11 +57,13 @@ public class ProductTest {
         httpHeaders = new HttpHeaders();
         httpHeaders.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         productRepository.deleteAll();
+        appUserRepository.deleteAll();
     }
 
     @After
     public void clear() {
         productRepository.deleteAll();
+        appUserRepository.deleteAll();
     }
 
     private Product createProduct(String name, int price) {
@@ -245,5 +257,53 @@ public class ProductTest {
                 .content(request.toString()))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testCreateProduct2() throws Exception {
+        String password = "123456";
+        AppUser appUser = new AppUser();
+        appUser.setName("Ken");
+        appUser.setEmailAddress("Test@gmail.com");
+        appUser.setPassword(new BCryptPasswordEncoder().encode(password));
+        appUser.setAuthorityList(Collections.singletonList(UserAuthority.ADMIN));
+        appUserRepository.insert(appUser);
+
+        AuthRequest authRequest = new AuthRequest();
+        authRequest.setUsername(appUser.getEmailAddress());
+        authRequest.setPassword(password);
+
+
+        JSONObject request = new JSONObject()
+                .put("username", authRequest.getUsername())
+                .put("password", authRequest.getPassword());
+        System.out.println("request.get(\"username\") = " + request.get("username"));
+        System.out.println("request.get(\"password\") = " + request.get("password"));
+        MvcResult result = mockMvc.perform(
+                MockMvcRequestBuilders
+                        .post("/auth")
+                        .headers(httpHeaders)
+                        .content(request.toString()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+
+        JSONObject tokenRes = new JSONObject(result.getResponse().getContentAsString());
+        String accessToken = tokenRes.getString("token");
+
+        httpHeaders.add(HttpHeaders.AUTHORIZATION, accessToken);
+        JSONObject productReq = new JSONObject();
+        productReq.put("name", "Apple Pie");
+        productReq.put("price", 100);
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/products")
+                .headers(httpHeaders)
+                .content(productReq.toString()))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").hasJsonPath())
+        .andExpect(jsonPath("$.name").value(productReq.getString("name")))
+        .andExpect(jsonPath("$.price").value(productReq.getInt("price")))
+        .andExpect(jsonPath("$.creator").value(appUser.getId()));
+
     }
 }

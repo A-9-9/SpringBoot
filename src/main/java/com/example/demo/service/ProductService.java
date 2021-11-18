@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.auth.UserIdentity;
 import com.example.demo.converter.ProductConverter;
 import com.example.demo.entity.product.Product;
 import com.example.demo.entity.product.ProductRequest;
@@ -16,17 +17,19 @@ import java.util.stream.Collectors;
 
 
 public class ProductService {
-
+    private UserIdentity userIdentity;
     private ProductRepository productRepository;
     private MailService mailService;
 
-    public ProductService(ProductRepository productRepository, MailService mailService) {
+    public ProductService(ProductRepository productRepository, MailService mailService, UserIdentity userIdentity) {
         this.productRepository = productRepository;
         this.mailService = mailService;
+        this.userIdentity = userIdentity;
     }
 
     public ProductResponse createProduct(ProductRequest request) {
         Product product = ProductConverter.toProduct(request);
+        product.setCreator(userIdentity.getId());
         product = productRepository.insert(product);
         mailService.sendNewProductMail(product.getId());
         return ProductConverter.toProductResponse(product);
@@ -48,7 +51,7 @@ public class ProductService {
 
         Product product = ProductConverter.toProduct(request);
         product.setId(oldProduct.getId());
-
+        product.setCreator(oldProduct.getCreator());
         return ProductConverter.toProductResponse(productRepository.save(product));
     }
 

@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.auth.UserIdentity;
 import com.example.demo.entity.mail.SendMailRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,7 @@ import java.util.stream.Stream;
 
 
 public class MailService {
-
+    private UserIdentity userIdentity;
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     private final JavaMailSenderImpl mailSender;
@@ -23,11 +24,12 @@ public class MailService {
     private final List<String> mailMessage;
     private final String LOG_EMAIL;
 
-    public MailService(JavaMailSenderImpl mailSender) {
+    public MailService(JavaMailSenderImpl mailSender, UserIdentity userIdentity) {
         this.mailSender = mailSender;
         this.tag = System.currentTimeMillis();
         this.mailMessage = new ArrayList<String>();
         this.LOG_EMAIL = mailSender.getUsername();
+        this.userIdentity = userIdentity;
     }
 
 
@@ -57,14 +59,14 @@ public class MailService {
     }
 
     public void sendNewProductMail(String id) {
-        String content = String.format("There's a new Product created (%s)", id);
-        sendMail("Product created.", content, Collections.singletonList(LOG_EMAIL));
+        String content = String.format("Hi, %s. There's a new Product created (%s)", userIdentity.getName(), id);
+        sendMail("Product created.", content, Collections.singletonList(userIdentity.getEmail()));
 
     }
 
     public void sendDeleteProductMail(String id) {
         String content = String.format("There's a Product deleted (%s)", id);
-        sendMail("Product deleted.", content, Collections.singletonList(LOG_EMAIL));
+        sendMail("Product deleted.", content, Collections.singletonList(userIdentity.getEmail()));
     }
 
     private void printMessage() {
